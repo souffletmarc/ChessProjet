@@ -289,74 +289,75 @@ class ReversiWidget extends JComponent implements MouseListener {
 		images.put(new Tuple<Integer, Integer>(2, 5), ImageIO.read(new File("src/img/king_b.png")));
 		images.put(new Tuple<Integer, Integer>(2, 6), ImageIO.read(new File("src/img/queen_b.png")));
 		// set the player 1 slot
-		board[0][0].player = 1;
-		board[0][0].piece = 2;
-		board[1][0].player = 1;
-		board[1][0].piece = 3;
-		board[2][0].player = 1;
-		board[2][0].piece = 4;
-		board[3][0].player = 1;
-		board[3][0].piece = 5;
-		board[4][0].player = 1;
-		board[4][0].piece = 6;
-		board[5][0].player = 1;
-		board[5][0].piece = 4;
-		board[6][0].player = 1;
-		board[6][0].piece = 3;
-		board[7][0].player = 1;
-		board[7][0].piece = 2;
-		
-		board[0][1].player = 1;
-		board[0][1].piece = 1;
-		board[1][1].player = 1;
-		board[1][1].piece = 1;
-		board[2][1].player = 1;
-		board[2][1].piece = 1;
-		board[3][1].player = 1;
-		board[3][1].piece = 1;
-		board[4][1].player = 1;
-		board[4][1].piece = 1;
-		board[5][1].player = 1;
-		board[5][1].piece = 1;
-		board[6][1].player = 1;
-		board[6][1].piece = 1;
-		board[7][1].player = 1;
-		board[7][1].piece = 1;
-
-		// PLayer 2
-		board[0][7].player = 2;
+		board[0][7].player = 1;
 		board[0][7].piece = 2;
-		board[1][7].player = 2;
+		board[1][7].player = 1;
 		board[1][7].piece = 3;
-		board[2][7].player = 2;
+		board[2][7].player = 1;
 		board[2][7].piece = 4;
-		board[3][7].player = 2;
+		board[3][7].player = 1;
 		board[3][7].piece = 5;
-		board[4][7].player = 2;
+		board[4][7].player = 1;
 		board[4][7].piece = 6;
-		board[5][7].player = 2;
+		board[5][7].player = 1;
 		board[5][7].piece = 4;
-		board[6][7].player = 2;
+		board[6][7].player = 1;
 		board[6][7].piece = 3;
-		board[7][7].player = 2;
+		board[7][7].player = 1;
 		board[7][7].piece = 2;
 		
-		board[0][6].player = 2;
+		board[0][6].player = 1;
 		board[0][6].piece = 1;
-		board[1][6].player = 2;
+		board[1][6].player = 1;
 		board[1][6].piece = 1;
-		board[2][6].player = 2;
+		board[2][6].player = 1;
 		board[2][6].piece = 1;
-		board[3][6].player = 2;
+		board[3][6].player = 1;
 		board[3][6].piece = 1;
-		board[4][6].player = 2;
+		board[4][6].player = 1;
 		board[4][6].piece = 1;
-		board[5][6].player = 2;
+		board[5][6].player = 1;
 		board[5][6].piece = 1;
-		board[6][6].player = 2;
+		board[6][6].player = 1;
 		board[6][6].piece = 1;
-		board[7][6].player = 2;
+		board[7][6].player = 1;
 		board[7][6].piece = 1;
+
+		// PLayer 2
+		
+		board[0][0].player = 2;
+		board[0][0].piece = 2;
+		board[1][0].player = 2;
+		board[1][0].piece = 3;
+		board[2][0].player = 2;
+		board[2][0].piece = 4;
+		board[3][0].player = 2;
+		board[3][0].piece = 5;
+		board[4][0].player = 2;
+		board[4][0].piece = 6;
+		board[5][0].player = 2;
+		board[5][0].piece = 4;
+		board[6][0].player = 2;
+		board[6][0].piece = 3;
+		board[7][0].player = 2;
+		board[7][0].piece = 2;
+		
+		board[0][1].player = 2;
+		board[0][1].piece = 1;
+		board[1][1].player = 2;
+		board[1][1].piece = 1;
+		board[2][1].player = 2;
+		board[2][1].piece = 1;
+		board[3][1].player = 2;
+		board[3][1].piece = 1;
+		board[4][1].player = 2;
+		board[4][1].piece = 1;
+		board[5][1].player = 2;
+		board[5][1].piece = 1;
+		board[6][1].player = 2;
+		board[6][1].piece = 1;
+		board[7][1].player = 2;
+		board[7][1].piece = 1;
 
 		
 
