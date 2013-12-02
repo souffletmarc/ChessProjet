@@ -73,9 +73,9 @@ class ReversiWidget extends JComponent implements MouseListener {
 	public ReversiWidget() throws IOException {
 		
 		// Set RGB color for black, cyan et white
-		black = Color.BLACK;
-		cyan = Color.CYAN;
-		white = Color.WHITE;
+		brown = new Color(140, 83, 46);
+		lightBrown = new Color(236, 185, 106);
+		//white = Color.WHITE;
 		// Call the initialState method
 		initialState();
 		// Adding a mouse listener to the widget
@@ -188,22 +188,22 @@ class ReversiWidget extends JComponent implements MouseListener {
 			{
 				if (x % 2 == 0 && y % 2 == 0)
 				{
-					g2d.setColor(white);
+					g2d.setColor(lightBrown);
 					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
 				}
 				else if (x % 2 == 0 && y != 0)
 				{
-					g2d.setColor(black);
+					g2d.setColor(brown);
 					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
 				}
 				else if (x % 2 != 0 && y % 2 == 0)
 				{
-					g2d.setColor(black);
+					g2d.setColor(brown);
 					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
 				}
 				else
 				{
-					g2d.setColor(white);
+					g2d.setColor(lightBrown);
 					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
 				}
 			}
@@ -214,7 +214,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	private void drawGrid(Graphics2D g2d) 
 	{
 		// set the color of the line
-		g2d.setColor(this.black);
+		g2d.setColor(Color.black);
 		// Draw lines for do the edge of the board
 		g2d.drawLine(0, 0, 0, getHeight());
 		g2d.drawLine(0, 0, getWidth(), 0);
@@ -390,7 +390,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	int current_player;					// denotes who the current player is
 	int player_1_score, player_2_score;	// denotes the score each player has in the game thus far
 	boolean inPlay;						// indicates if the game is being played at the moment
-	Color black, cyan, white;			// color objects that represent their named colours
+	Color brown, lightBrown;			// color objects that represent their named colours
 	Tuple<Integer, Integer> selected;
 	
 }
