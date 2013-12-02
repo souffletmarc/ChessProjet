@@ -29,9 +29,9 @@ public class Chess extends JFrame {
 	public Chess() {
 
 		// set size of the windows
-		setSize(655, 675);
+		setSize(640, 640);
 		// set the title of the window
-		setTitle("Reversi");
+		setTitle("Chess");
 		// set the default close operation
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		// make a panel and add to the content pane
@@ -121,10 +121,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 	{
 		// Creation of 2D graphics object
 		Graphics2D g2d = (Graphics2D) g;
-		// Set a color of background
-		g2d.setColor(cyan);
-		// Draw the background
-		g2d.fillRect(0, 0, getWidth(), getHeight());
+		// Call the drawBoard method
+		drawBoard(g2d);
 		// Call the drawGrid method
 		drawGrid(g2d);
 		// Call the drawPieces method
@@ -136,54 +134,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 	// will take in a position (x,y) a player and will attempt to make a move. if successful then it will place the
 	// piece and update the game board.
 	private void attemptMove(int x, int y, int player) {
-		// boolean which is equal to true if there is a change in the game
-		boolean change = false;
-		// Check the value of the variable inPlay
-		if (inPlay && checkPiece(x, y) != -1) {
-			if (checkPiece(x , y) == 0) {
-				// Check all adjacent cells
-				for (int x2 = (x - 1); x2 <= (x + 1); x2++) {
-					if (checkPiece(x2, 1) != -1) {
-						for (int y2 = (y - 1); y2 <= (y + 1); y2++) {
-							if (checkPiece(1, y2) != -1) {
-								// If the value is different to 0 and different to current_player then the reverseChainAvailable is called
-								if ((x2 != x || y2 != y) && checkPiece(x2 , y2) != 0 && checkPiece(x2 , y2) != player) {
-									if (reverseChainAvailable(x2 - x, y2 - y, player)) {
-										// Update the variable change
-										change = true;
-										// Set player position
-										board[x][y] = player;
-										// Call the reversePieces method
-										reversePieces(x, y, x2 - x, y2 - y, player);
-									}
-								}
-							}
-						}
-					}
-				}
-				//If there is the change in the game, we swap the player, we update the score and we repaint the board
-				if (change == true)
-				{
-					swapPlayers();
-					updatePlayerScores();
-					paintComponent(getGraphics());
-					// Display who must play
-					System.out.println("It's player " + current_player + "'s turn");
-					// If it's the game is over we set the variable inPlay to false display the score and the winner.
-					if (determineEndGame()) 
-					{
-						inPlay = false;
-						System.out.println("Player 1's score  : "+ player_1_score +"    Player 2's score : " + player_2_score);
-						if (player_1_score > player_2_score)
-							System.out.println("Player 1 win !");
-						else
-							System.out.println("Player 2 win !");
-							
-					}
-				}
-			}
-		}
-			
 	}	
 	
 	// checks if there is a piece in a given position. returns 0 if empty, -1 if out of bounds, 1 for player 1, and
@@ -197,80 +147,50 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return board[x][y];
 	}
 	
-	// determines if a valid reverse chain can be made from the position (x, y) in the given direction (dx, dy) and a
-	// given player
+	
 	private boolean determineChain(int x, int y, int dx, int dy, int player) 
 	{
-		x+= dx;
-		y+= dy;
-		//Check if the value is different to the current_player and to 0
-		if ((checkPiece(x , y) != -1) && checkPiece(x , y) != player &&  checkPiece(x , y) != 0)
-		{
-			// Check the chain until we find a piece of the current player 
-			while (checkPiece(x, y) != -1 && checkPiece(x, y) != 0)
-			{
-				if (checkPiece(x, y) == player)
-					return true;
-				x +=dx;
-				y +=dy;
-			}
-		}
 		return false;
 	}
 	
-	// determines if an end game state has been reached. this will happen if there are zero spaces on the board, if one
-	// player has lost all of their pieces, or there are no valid moves left for either player
 	private boolean determineEndGame() 
 	{
 		
-		boolean player1 = false;
-		boolean player2 = false;
-		boolean free = false;
-		boolean playerPlay = false;
-		
-		// Scan the board to check if the game is over
+	
+		return true;
+	}
+	
+	private void drawBoard(Graphics2D g2d) 
+	{
+		int		sizeCellX = getWidth() / 8;
+		int		sizeCellY = getHeight() / 8;
 		for (int x = 0; x < 8; x++)
 		{
+			
 			for (int y = 0; y < 8; y++)
 			{
-				if (checkPiece(x , y) == 0)
+				if (x % 2 == 0 && y % 2 == 0)
 				{
-					for (int x1 = x - 1; x1 < x + 2; x1++)
-					{
-						for (int y1 = y - 1; y1 < y + 2; y1++)
-						{
-							//If there are moves available for the player then return true
-							if ((checkPiece(x1, y1) != -1) && (x1 != x || y1 != y) && (checkPiece(x1 , y1) != 0 && checkPiece(x1 , y1) != current_player))
-							{
-								oldx = x;
-								oldy = y;
-								if (reverseChainAvailable(x1 - x, y1 - y, current_player))
-									playerPlay = true;
-							}
-						}
-					}
-					// If there is a free space in the board we set the variable to true
-					free = true;
+					g2d.setColor(white);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
 				}
-				//If either player has lost all their pieces then return true
-				else if (checkPiece(x , y) == 1)
-					player1 = true;
-				else if (checkPiece(x , y) == 2)
-					player2 = true;
-				// If there is free space, black piece, white piece on the board and moves available for the player then is'nt the end of game 
-				if (player1 == true && player2 == true && free == true && playerPlay == true)
-					return false;
+				else if (x % 2 == 0 && y != 0)
+				{
+					g2d.setColor(black);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
+				else if (x % 2 != 0 && y % 2 == 0)
+				{
+					g2d.setColor(black);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
+				else
+				{
+					g2d.setColor(white);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
 			}
 		}
-		// In the other case it's the end of game, so we display the game over
-		System.out.println("\n-----GAME OVER-----");
-		if (player1 == false)
-				System.out.println("Player 1 has lost all his piece");
-		if (player2 == false)
-				System.out.println("Player 2 has lost all his piece");
-		if (playerPlay == false)
-			System.out.println("The player "+ current_player +" hasn't available move");
-		return true;
 	}
 	
 	// will draw the grid for the game. this assumes a 640 by 640 grid
@@ -357,26 +277,15 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 	}
 	
-	// given a position (x, y) and a player this will determine if there is a valid move to be made at the given
-	// position by checking for the availability of a reverse chain in any direction
+	
 	private boolean reverseChainAvailable(int x, int y, int player) 
 	{
-		//Check each of the adjacent 8 cells to see if there is a chain available by using determineChain method
-		return determineChain(oldx, oldy, x, y, player);	
+		return false;
 	}	
 	
-	// given a position (x, y), direction (dx, dy) and a player this will reverse all opponents pieces in a given
-	// direction. NOTE: this assumes that determineChain has been used first. method does not perform checks
 	private void reversePieces(int x, int y, int dx, int dy, int player) 
 	{
-		x+= dx;
-		y+= dy;	
-		while (checkPiece(x , y) != player)
-		{
-				board[x][y] = player;
-				x+=dx;
-				y+=dy;
-		}
+		
 	}
 	
 	// called at the end of a valid turn this will swap the current players
@@ -392,20 +301,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 	// updates the player scores after a piece has been placed
 	private void updatePlayerScores() 
 	{	
-		player_1_score = 0;
-		player_2_score = 0;
-
-		// Computation of all the piece black and white and update the score
-		for (int x = 0; x < 8; x++)
-		{
-			for (int y = 0; y < 8; y++)
-			{
-				if (checkPiece(x , y) == 1)
-					player_1_score++;
-				else if (checkPiece(x , y) == 2)
-					player_2_score++;
-			}
-		}
 		// Display the score
 		System.out.println("Player 1's score  : "+ player_1_score +"    Player 2's score : " + player_2_score);
 	}
