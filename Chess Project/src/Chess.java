@@ -13,21 +13,33 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
+
+
 /** classes **/
 
 public class Chess extends JFrame {
 	
-	/** constructors **/
-	public Chess() {
+	/** constructors 
+	 * @throws IOException **/
+	public Chess() throws IOException {
 
 		// set size of the windows
 		setSize(640, 640);
@@ -40,8 +52,9 @@ public class Chess extends JFrame {
 		getContentPane().add(widget);
 	}
 	
-	/** public functions **/
-	public static void main(String[] args) 
+	/** public functions 
+	 * @throws IOException **/
+	public static void main(String[] args) throws IOException 
 	{
 		Chess  chess = new Chess();
 		// Display the windows
@@ -55,8 +68,9 @@ public class Chess extends JFrame {
 
 class ReversiWidget extends JComponent implements MouseListener {
 	
-	/** constructors **/
-	public ReversiWidget() {
+	/** constructors 
+	 * @throws IOException **/
+	public ReversiWidget() throws IOException {
 		
 		// Set RGB color for black, cyan et white
 		black = Color.BLACK;
@@ -199,27 +213,33 @@ class ReversiWidget extends JComponent implements MouseListener {
 	
 	// will draw the pieces that are currently on the board. assumes a widget size of 640 square
 	private void drawPieces(Graphics2D g2d) {
-		
-		// Set a coefficient to determine the size of the piece
-		double	coef = 0.9;
 		// Computation the size of the cells
-		int		sizeCellX = getWidth() / 8;
-		int		sizeCellY = getHeight() / 8;
-		// Computation the size of the piece
-		int		sizeX = (int)(sizeCellX * coef);
-		int 	sizeY = (int)(sizeCellY * coef);
+		int		sizeCellX = (getWidth() / 8) + 2;
+		int		sizeCellY = (getHeight() / 8) + 2;
+
 		
 		for (int x = 0; x < 8; x++)
 		{
 			for (int y = 0; y < 8; y++)
 			{
-				
+				g2d.drawImage(getPieceImage(board[x][y]), x * sizeCellX, y * sizeCellY, null);
 			}
 		}
 	}
 	
+	
+	private BufferedImage getPieceImage(Tuple<Integer, Integer> t) {	    
+	    for (Entry<Tuple<Integer, Integer>, BufferedImage> entry : images.entrySet())
+	    {
+	    	if (entry.getKey().player == t.player && entry.getKey().piece == t.piece) {
+	    		return entry.getValue();
+	    	}
+	    }
+	    return null;
+	}
+	
 	// will initialise the game board to the starting state
-	private void initialState() 
+	private void initialState() throws IOException 
 	{
 		// Initialise all cells in the array to have a value of zero
 		board = new Tuple[8][8];
@@ -230,75 +250,90 @@ class ReversiWidget extends JComponent implements MouseListener {
 				board[x][y] = new Tuple<Integer, Integer>(0, 0);
 			}
 		}
+		//set images
+		images = new Hashtable<Tuple<Integer, Integer>, BufferedImage>();
+		images.put(new Tuple<Integer, Integer>(1, 1), ImageIO.read(new File("src/img/pawn_w.png")));
+		images.put(new Tuple<Integer, Integer>(1, 2), ImageIO.read(new File("src/img/rook_w.png")));
+		images.put(new Tuple<Integer, Integer>(1, 3), ImageIO.read(new File("src/img/knight_w.png")));
+		images.put(new Tuple<Integer, Integer>(1, 4), ImageIO.read(new File("src/img/bishop_w.png")));
+		images.put(new Tuple<Integer, Integer>(1, 5), ImageIO.read(new File("src/img/king_w.png")));
+		images.put(new Tuple<Integer, Integer>(1, 6), ImageIO.read(new File("src/img/queen_w.png")));
+		
+		images.put(new Tuple<Integer, Integer>(2, 1), ImageIO.read(new File("src/img/pawn_b.png")));
+		images.put(new Tuple<Integer, Integer>(2, 2), ImageIO.read(new File("src/img/rook_b.png")));
+		images.put(new Tuple<Integer, Integer>(2, 3), ImageIO.read(new File("src/img/knight_b.png")));
+		images.put(new Tuple<Integer, Integer>(2, 4), ImageIO.read(new File("src/img/bishop_b.png")));
+		images.put(new Tuple<Integer, Integer>(2, 5), ImageIO.read(new File("src/img/king_b.png")));
+		images.put(new Tuple<Integer, Integer>(2, 6), ImageIO.read(new File("src/img/queen_b.png")));
 		// set the player 1 slot
 		board[0][0].player = 1;
 		board[0][0].piece = 2;
-		board[0][1].player = 1;
-		board[0][1].piece = 3;
-		board[0][2].player = 1;
-		board[0][2].piece = 4;
-		board[0][3].player = 1;
-		board[0][3].piece = 6;
-		board[0][4].player = 1;
-		board[0][4].piece = 5;
-		board[0][5].player = 1;
-		board[0][5].piece = 4;
-		board[0][6].player = 1;
-		board[0][6].piece = 3;
-		board[0][7].player = 1;
-		board[0][7].piece = 2;
-		
 		board[1][0].player = 1;
-		board[1][0].piece = 1;
+		board[1][0].piece = 3;
+		board[2][0].player = 1;
+		board[2][0].piece = 4;
+		board[3][0].player = 1;
+		board[3][0].piece = 5;
+		board[4][0].player = 1;
+		board[4][0].piece = 6;
+		board[5][0].player = 1;
+		board[5][0].piece = 4;
+		board[6][0].player = 1;
+		board[6][0].piece = 3;
+		board[7][0].player = 1;
+		board[7][0].piece = 2;
+		
+		board[0][1].player = 1;
+		board[0][1].piece = 1;
 		board[1][1].player = 1;
 		board[1][1].piece = 1;
-		board[1][2].player = 1;
-		board[1][2].piece = 1;
-		board[1][3].player = 1;
-		board[1][3].piece = 1;
-		board[1][4].player = 1;
-		board[1][4].piece = 1;
-		board[1][5].player = 1;
-		board[1][5].piece = 1;
-		board[1][6].player = 1;
-		board[1][6].piece = 1;
-		board[1][7].player = 1;
-		board[1][7].piece = 1;
+		board[2][1].player = 1;
+		board[2][1].piece = 1;
+		board[3][1].player = 1;
+		board[3][1].piece = 1;
+		board[4][1].player = 1;
+		board[4][1].piece = 1;
+		board[5][1].player = 1;
+		board[5][1].piece = 1;
+		board[6][1].player = 1;
+		board[6][1].piece = 1;
+		board[7][1].player = 1;
+		board[7][1].piece = 1;
 
 		// PLayer 2
-		board[7][0].player = 2;
-		board[7][0].piece = 2;
-		board[7][1].player = 2;
-		board[7][1].piece = 3;
-		board[7][2].player = 2;
-		board[7][2].piece = 4;
-		board[7][3].player = 2;
-		board[7][3].piece = 6;
-		board[7][4].player = 2;
-		board[7][4].piece = 5;
-		board[7][5].player = 2;
-		board[7][5].piece = 4;
-		board[7][6].player = 2;
-		board[7][6].piece = 3;
+		board[0][7].player = 2;
+		board[0][7].piece = 2;
+		board[1][7].player = 2;
+		board[1][7].piece = 3;
+		board[2][7].player = 2;
+		board[2][7].piece = 4;
+		board[3][7].player = 2;
+		board[3][7].piece = 5;
+		board[4][7].player = 2;
+		board[4][7].piece = 6;
+		board[5][7].player = 2;
+		board[5][7].piece = 4;
+		board[6][7].player = 2;
+		board[6][7].piece = 3;
 		board[7][7].player = 2;
 		board[7][7].piece = 2;
-	
-		board[6][0].player = 2;
-		board[6][0].piece = 1;
-		board[6][1].player = 2;
-		board[6][1].piece = 1;
-		board[6][2].player = 2;
-		board[6][2].piece = 1;
-		board[6][3].player = 2;
-		board[6][3].piece = 1;
-		board[6][4].player = 2;
-		board[6][4].piece = 1;
-		board[6][5].player = 2;
-		board[6][5].piece = 1;
+		
+		board[0][6].player = 2;
+		board[0][6].piece = 1;
+		board[1][6].player = 2;
+		board[1][6].piece = 1;
+		board[2][6].player = 2;
+		board[2][6].piece = 1;
+		board[3][6].player = 2;
+		board[3][6].piece = 1;
+		board[4][6].player = 2;
+		board[4][6].piece = 1;
+		board[5][6].player = 2;
+		board[5][6].piece = 1;
 		board[6][6].player = 2;
 		board[6][6].piece = 1;
-		board[6][7].player = 2;
-		board[6][7].piece = 1;
+		board[7][6].player = 2;
+		board[7][6].piece = 1;
 
 		
 
@@ -322,8 +357,9 @@ class ReversiWidget extends JComponent implements MouseListener {
 		else
 			current_player = 1;
 	}
-	
+
 	/** private fields **/
+	Hashtable<Tuple<Integer, Integer>, BufferedImage> images;
 	Tuple<Integer, Integer> board[][];						// the state of the game board
 	int oldx, oldy;						// denotes where the player clicked when he pressed the mouse button
 	int current_player;					// denotes who the current player is
