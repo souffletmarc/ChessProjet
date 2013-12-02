@@ -115,7 +115,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	
 	// will react to mouse release events on the widget
 	public void mouseReleased(MouseEvent event) {
-		
+	
 		// Save the x and y position when the left mouse button is released and convert the coordinate to indexes of the array
 		if (event.getButton() == MouseEvent.BUTTON1) 
 		{
@@ -127,10 +127,33 @@ class ReversiWidget extends JComponent implements MouseListener {
 			{
 				// Call the attempMove method
 //				attemptMove(oldx, oldy, current_player);
+				if (selected == null)
+				{
+				redrawClick(getGraphics(), newx, newy);
+				selected = new Tuple<Integer, Integer>(newx, newy);
+				}
+				else if (selected.player == newx && selected.piece == newy)
+				{
+					paintComponent(getGraphics());
+					selected = null;
+				}
+				else
+				{
+					//Try move
+				}
+				
 			}
 		}
 	}
 	
+	public void redrawClick(Graphics g2d, int x, int y)
+	{
+		int		sizeCellX = (getWidth() / 8);
+		int		sizeCellY = (getHeight() / 8);
+		g2d.setColor(Color.gray);
+		g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+		drawPieces((Graphics2D)g2d);
+	}
 	// repaints the widget when an update of any kind is made
 	public void paintComponent(Graphics g) 
 	{
@@ -344,6 +367,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 		inPlay = true;
 		// set the current player
 		current_player = 1;
+		// set the selected bolean
+		selected = null;
 		
 		
 		
@@ -366,4 +391,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 	int player_1_score, player_2_score;	// denotes the score each player has in the game thus far
 	boolean inPlay;						// indicates if the game is being played at the moment
 	Color black, cyan, white;			// color objects that represent their named colours
+	Tuple<Integer, Integer> selected;
+	
 }
