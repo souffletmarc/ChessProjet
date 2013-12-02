@@ -30,9 +30,9 @@ public class Chess extends JFrame {
 	public Chess() {
 
 		// set size of the windows
-		setSize(655, 675);
+		setSize(640, 640);
 		// set the title of the window
-		setTitle("Reversi");
+		setTitle("Chess");
 		// set the default close operation
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		// make a panel and add to the content pane
@@ -112,7 +112,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 			if (newx == oldx && newy == oldy) 
 			{
 				// Call the attempMove method
-				attemptMove(oldx, oldy, current_player);
+//				attemptMove(oldx, oldy, current_player);
 			}
 		}
 	}
@@ -122,10 +122,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 	{
 		// Creation of 2D graphics object
 		Graphics2D g2d = (Graphics2D) g;
-		// Set a color of background
-		g2d.setColor(cyan);
-		// Draw the background
-		g2d.fillRect(0, 0, getWidth(), getHeight());
+		// Call the drawBoard method
+		drawBoard(g2d);
 		// Call the drawGrid method
 		drawGrid(g2d);
 		// Call the drawPieces method
@@ -134,17 +132,45 @@ class ReversiWidget extends JComponent implements MouseListener {
 	
 	/** private functions **/
 	
-	// will take in a position (x,y) a player and will attempt to make a move. if successful then it will place the
-	// piece and update the game board.
-	private void attemptMove(int x, int y, int player) {
-
-	}	
 	
 	// determines if an end game state has been reached. this will happen if there are zero spaces on the board, if one
 	// player has lost all of their pieces, or there are no valid moves left for either player
 	private boolean determineEndGame() 
 	{
 		return (true);
+	}	
+	
+	private void drawBoard(Graphics2D g2d) 
+	{
+		int		sizeCellX = getWidth() / 8;
+		int		sizeCellY = getHeight() / 8;
+		for (int x = 0; x < 8; x++)
+		{
+			
+			for (int y = 0; y < 8; y++)
+			{
+				if (x % 2 == 0 && y % 2 == 0)
+				{
+					g2d.setColor(white);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
+				else if (x % 2 == 0 && y != 0)
+				{
+					g2d.setColor(black);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
+				else if (x % 2 != 0 && y % 2 == 0)
+				{
+					g2d.setColor(black);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
+				else
+				{
+					g2d.setColor(white);
+					g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
+				}
+			}
+		}
 	}
 	
 	// will draw the grid for the game. this assumes a 640 by 640 grid
@@ -287,7 +313,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 		
 	}
-	
 	// called at the end of a valid turn this will swap the current players
 	private void swapPlayers() 
 	{
@@ -296,12 +321,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 			current_player = 2;
 		else
 			current_player = 1;
-	}
-	
-	// updates the player scores after a piece has been placed
-	private void updatePlayerScores() 
-	{	
-
 	}
 	
 	/** private fields **/
