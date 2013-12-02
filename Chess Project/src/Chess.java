@@ -75,7 +75,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 		// Set RGB color for black, cyan et white
 		brown = new Color(140, 83, 46);
 		lightBrown = new Color(236, 185, 106);
-		//white = Color.WHITE;
+		colorSelected = new Color(255, 255, 255, 127);
+		black = Color.black;
 		// Call the initialState method
 		initialState();
 		// Adding a mouse listener to the widget
@@ -150,7 +151,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	{
 		int		sizeCellX = (getWidth() / 8);
 		int		sizeCellY = (getHeight() / 8);
-		g2d.setColor(Color.gray);
+		g2d.setColor(colorSelected);
 		g2d.fillRect(x * sizeCellX, y * sizeCellY, sizeCellX, sizeCellY);
 		drawPieces((Graphics2D)g2d);
 	}
@@ -214,7 +215,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	private void drawGrid(Graphics2D g2d) 
 	{
 		// set the color of the line
-		g2d.setColor(Color.black);
+		g2d.setColor(black);
 		// Draw lines for do the edge of the board
 		g2d.drawLine(0, 0, 0, getHeight());
 		g2d.drawLine(0, 0, getWidth(), 0);
@@ -237,15 +238,15 @@ class ReversiWidget extends JComponent implements MouseListener {
 	// will draw the pieces that are currently on the board. assumes a widget size of 640 square
 	private void drawPieces(Graphics2D g2d) {
 		// Computation the size of the cells
-		int		sizeCellX = (getWidth() / 8) + 2;
-		int		sizeCellY = (getHeight() / 8) + 2;
+		int		sizeCellX = (getWidth() / 8);
+		int		sizeCellY = (getHeight() / 8);
 
 		
 		for (int x = 0; x < 8; x++)
 		{
 			for (int y = 0; y < 8; y++)
 			{
-				g2d.drawImage(getPieceImage(board[x][y]), x * sizeCellX, y * sizeCellY, null);
+				g2d.drawImage(getPieceImage(board[x][y]), x * sizeCellX + 8, y * sizeCellY + 8, null);
 			}
 		}
 	}
@@ -391,7 +392,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	int current_player;					// denotes who the current player is
 	int player_1_score, player_2_score;	// denotes the score each player has in the game thus far
 	boolean inPlay;						// indicates if the game is being played at the moment
-	Color brown, lightBrown;			// color objects that represent their named colours
+	Color brown, lightBrown, black, colorSelected;			// color objects that represent their named colours
 	Tuple<Integer, Integer> selected;
 	
 }
