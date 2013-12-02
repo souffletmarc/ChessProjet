@@ -127,12 +127,12 @@ class ReversiWidget extends JComponent implements MouseListener {
 			{
 				// Call the attempMove method
 //				attemptMove(oldx, oldy, current_player);
-				if (selected == null)
+				if (selected == null && board[newx][newy].player == current_player)
 				{
-				redrawClick(getGraphics(), newx, newy);
-				selected = new Tuple<Integer, Integer>(newx, newy);
+					redrawClick(getGraphics(), newx, newy);
+					selected = new Tuple<Integer, Integer>(newx, newy);
 				}
-				else if (selected.player == newx && selected.piece == newy)
+				else if (selected != null && selected.player == newx && selected.piece == newy)
 				{
 					paintComponent(getGraphics());
 					selected = null;
