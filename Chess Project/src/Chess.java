@@ -250,11 +250,42 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 	}
 	
+	public boolean canAttack(int fromX, int fromY, int toX, int toY) {
+		int pieceKind = board[fromX][fromY].piece;
+		
+		
+		
+		return false;
+	}
+	
+	public boolean pieceInDanger(int px, int py) {
+		for (int x = 0; x < 8; ++x) {
+			for (int y = 0; y < 8; ++y) {
+				if (canAttack(x, y, px, py))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public Tuple<Integer, Integer> getKingPosition(int player) {
+		for (int x = 0; x < 8; ++x) {
+			for (int y = 0; y < 8; ++y) {
+				if (board[x][y].player == player && board[x][y].piece == 7)
+					return new Tuple<Integer, Integer>(x, y);
+			}
+		}
+		return null;
+	}
+	
 	public void move(int x, int y) {
 		System.out.println(selected.player + "/" + selected.piece + " to " + x + "/" + y);
+		Tuple <Integer, Integer> kingPos = getKingPosition(current_player);
+		if (!pieceInDanger(kingPos.player,kingPos.piece)){
 		 board[x][y] = new Tuple<Integer, Integer>(board[selected.player][selected.piece].player, board[selected.player][selected.piece].piece);
 		 board[selected.player][selected.piece].piece = 0;
 		 board[selected.player][selected.piece].player = 0;
+		}
 	}
 	
 	public void redrawClick(Graphics g2d, int x, int y)
