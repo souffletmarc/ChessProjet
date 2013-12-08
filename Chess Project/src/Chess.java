@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.io.IOException;
@@ -177,6 +178,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 		if (piece == 1) {
 			if (checkMovePion(x, y) || checkAttackPion(x,y)) {
+				changePion(x, y);
 				return true;
 			}
 			return false;
@@ -214,6 +216,45 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	public String choiceOfPion()
+	{
+		Object choices[] = {"Rook", "Knight", "Queen", "Bishop"};
+		String input = (String) JOptionPane.showInputDialog(this, "Choose a pion", "Choice", JOptionPane.YES_OPTION, null, choices, "Rook");
+		return input;
+	}
+	
+	public void changePion(int x, int y)
+	{
+		String value = null;
+		if (y == 7 || y == 0)
+		{
+			
+			while (value == null)
+			{
+				value = choiceOfPion();
+				if (value == null)
+				{
+					JOptionPane.showMessageDialog(this,"You have to choose a new pion", "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+			if (value == "Rook")
+			{
+				board[selected.player][selected.piece].piece = 2;
+			}
+			else if (value == "Knight")
+			{
+				board[selected.player][selected.piece].piece = 3;
+			}
+			else if (value == "Queen")
+			{
+				board[selected.player][selected.piece].piece = 6;
+			}
+			else if (value == "Bishop")
+			{
+				board[selected.player][selected.piece].piece = 4;
+			}
+		}
+	}
 	public boolean checkMoveRook(int x, int y)
 	{
 		int depX = x - selected.player;
