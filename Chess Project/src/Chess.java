@@ -114,6 +114,59 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 	}
 	
+	public boolean checkAttackPion(int x, int y) {
+		
+		
+		return true;
+	}
+	
+	public boolean checkMovePion(int x, int y) {
+		
+		return false;
+	}
+	
+	public boolean tryMove(int x, int y) {
+		int piece = board[this.selected.player][this.selected.piece].piece;
+		
+		if (piece == 1) {
+			if (checkMovePion(x, y) || checkAttackPion(x,y)) {
+				return true;
+			}
+			return false;
+		}
+		/*else if (piece == 2) {
+			if (checkMoveRook(x, y)) {
+				return true;
+			}
+			return false;
+		}
+		else if (piece == 3) {
+			if (checkMoveKnight(x, y)) {
+				return true;
+			}
+			return false;
+		}
+		else if (piece == 4) {
+			if (checkMoveBishop(x, y)) {
+				return true;
+			}
+			return false;
+		}
+		else if (piece == 5) {
+			if (checkMoveKing(x, y)) {
+				return true;
+			}
+			return false;
+		}
+		else if (piece == 6) {
+			if (checkMoveQueen(x, y)) {
+				return true;
+			}
+			return false;
+		}*/
+		return false;
+	}
+	
 	// will react to mouse release events on the widget
 	public void mouseReleased(MouseEvent event) {
 	
@@ -126,8 +179,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 			//if newx, newy match oldx, oldy a move should be attempted in that position
 			if (newx == oldx && newy == oldy) 
 			{
-				// Call the attempMove method
-//				attemptMove(oldx, oldy, current_player);
 				if (selected == null && board[newx][newy].player == current_player)
 				{
 					redrawClick(getGraphics(), newx, newy);
@@ -138,13 +189,25 @@ class ReversiWidget extends JComponent implements MouseListener {
 					paintComponent(getGraphics());
 					selected = null;
 				}
-				else
+				else if (selected != null)
 				{
-					//Try move
+					if (tryMove(newx, newy)) {
+						move(newx, newy);
+						selected = null;
+						paintComponent(getGraphics());
+						swapPlayers();
+					}
 				}
 				
 			}
 		}
+	}
+	
+	public void move(int x, int y) {
+		System.out.println(selected.player + "/" + selected.piece + " to " + x + "/" + y);
+		 board[x][y] = new Tuple<Integer, Integer>(board[selected.player][selected.piece].player, board[selected.player][selected.piece].piece);
+		 board[selected.player][selected.piece].piece = 0;
+		 board[selected.player][selected.piece].player = 0;
 	}
 	
 	public void redrawClick(Graphics g2d, int x, int y)
