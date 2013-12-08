@@ -114,14 +114,33 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 	}
 	
+	public int getOtherPlayer()
+	{
+		if (current_player == 1)
+			return 2;
+		else
+			return 1;
+	}
+	
 	public boolean checkAttackPion(int x, int y) {
+		int depX = selected.player - x;
+		int depY = selected.piece - y;
 		
+		if ((depX == 1 || depX == -1) && ((depY == -1 && current_player == 2) || (depY == 1 && current_player == 1)) && board[x][y].player == getOtherPlayer()) {
+			return true;
+		}
 		
-		return true;
+		return false;
 	}
 	
 	public boolean checkMovePion(int x, int y) {
-		
+		int depX = selected.player - x;
+		int depY = selected.piece - y;
+
+		if (depX == 0 && ((depY == -1 && current_player == 2) || (depY == 1 && current_player == 1)) && board[x][y].player == 0)
+			return true;
+		else if (((current_player == 1 && depX == 0 && depY == 2 && selected.piece == 6) || (current_player == 2 && depX == 0 && depY == -2 && selected.piece == 1)) && board[x][y].player == 0)
+			return true;
 		return false;
 	}
 	
