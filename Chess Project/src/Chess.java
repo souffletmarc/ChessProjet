@@ -134,12 +134,13 @@ class ReversiWidget extends JComponent implements MouseListener {
 			}
 			return false;
 		}
-		/*else if (piece == 2) {
-			if (checkMoveRook(x, y)) {
+		else if (piece == 2) {
+			if (checkMoveRook(x, y) /*|| checkAttackPion(x,y)*/) {
 				return true;
 			}
 			return false;
 		}
+		/*
 		else if (piece == 3) {
 			if (checkMoveKnight(x, y)) {
 				return true;
@@ -165,6 +166,17 @@ class ReversiWidget extends JComponent implements MouseListener {
 			return false;
 		}*/
 		return false;
+	}
+	
+	public boolean checkMoveRook(int x, int y)
+	{
+		if (this.selected.player == x || this.selected.piece == y)
+		{
+			System.out.println("True");
+				return true;
+		}
+		else
+			return false;
 	}
 	
 	// will react to mouse release events on the widget
