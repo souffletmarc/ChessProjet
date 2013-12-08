@@ -144,6 +144,34 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	public boolean checkMoveKnight(int x, int y) {
+		int depX = selected.player - x;
+		int depY = selected.piece - y;
+
+		
+		if (((depX == 2 && depY == 1) || (depX == -2 && depY == 1) ||
+				(depX == 2 && depY == -1) || (depX == -2 && depY == -1) ||
+				(depX == 1 && depY == 2) || (depX == -1 && depY == 2) ||
+				(depX == -1 && depY == -2) || (depX == 1 && depY == -2)) && board[x][y].player != current_player) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean checkMoveKing(int x, int y) {
+		int depX = selected.player - x;
+		int depY = selected.piece - y;
+
+		
+		if (((depX == 0 && depY == 1) || (depX == 1 && depY == 1) ||
+				(depX == -1 && depY == 1) || (depX == -1 && depY == 0) ||
+				(depX == 1 && depY == 0) || (depX == -1 && depY == -1) ||
+				(depX == 1 && depY == -1) || (depX == 0 && depY == -1)) && board[x][y].player != current_player) {
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean tryMove(int x, int y) {
 		int piece = board[this.selected.player][this.selected.piece].piece;
 		
@@ -158,26 +186,26 @@ class ReversiWidget extends JComponent implements MouseListener {
 				return true;
 			}
 			return false;
-		}
+		}*/
 		else if (piece == 3) {
 			if (checkMoveKnight(x, y)) {
 				return true;
 			}
 			return false;
 		}
-		else if (piece == 4) {
+		/*else if (piece == 4) {
 			if (checkMoveBishop(x, y)) {
 				return true;
 			}
 			return false;
-		}
+		}*/
 		else if (piece == 5) {
 			if (checkMoveKing(x, y)) {
 				return true;
 			}
 			return false;
 		}
-		else if (piece == 6) {
+		/*else if (piece == 6) {
 			if (checkMoveQueen(x, y)) {
 				return true;
 			}
