@@ -621,9 +621,9 @@ class ReversiWidget extends JComponent implements MouseListener {
 		board[2][7].player = 1;
 		board[2][7].piece = 4;
 		board[3][7].player = 1;
-		board[3][7].piece = 6;
+		board[3][7].piece = 5;
 		board[4][7].player = 1;
-		board[4][7].piece = 5;
+		board[4][7].piece = 6;
 		board[5][7].player = 1;
 		board[5][7].piece = 4;
 		board[6][7].player = 1;
@@ -657,9 +657,9 @@ class ReversiWidget extends JComponent implements MouseListener {
 		board[2][0].player = 2;
 		board[2][0].piece = 4;
 		board[3][0].player = 2;
-		board[3][0].piece = 6;
+		board[3][0].piece = 5;
 		board[4][0].player = 2;
-		board[4][0].piece = 5;
+		board[4][0].piece = 6;
 		board[5][0].player = 2;
 		board[5][0].piece = 4;
 		board[6][0].player = 2;
