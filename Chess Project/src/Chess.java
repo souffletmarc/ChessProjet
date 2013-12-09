@@ -19,8 +19,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -396,7 +399,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 				}
 				else if (selected != null)
 				{
-					if (tryMove(newx, newy) && launchMove(newx, newy)) {
+					if (!determineEndGame() && tryMove(newx, newy) && launchMove(newx, newy)) {
 						selected = null;
 						paintComponent(getGraphics());
 						swapPlayers();
@@ -411,32 +414,44 @@ class ReversiWidget extends JComponent implements MouseListener {
 		int piece = board[fromX][fromY].piece;
 		selected.player = fromX;
 		selected.piece = fromY;
+		dangerousPieces.clear();
 		System.out.println("Current piece = " + piece + " // King position: " + toX + "/" + toY + " could be attack by " + fromX + "/" + fromY + "?");
 		if (piece == 1) {
 			if (checkAttackPion(toX, toY)) {
+				dangerousPieces.add(new Tuple<Integer, Integer>(fromX, fromY));
 				System.out.println("Yes !");
 				return true;
 			}
 		}
 		else if (piece == 2) {
-			if (checkMoveRook(toX, toY) )
+			if (checkMoveRook(toX, toY) ) {
+				dangerousPieces.add(new Tuple<Integer, Integer>(fromX, fromY));
 				return true;
+			}
 		}
 		else if (piece == 3) {
-			if (checkMoveKnight(toX, toY))
+			if (checkMoveKnight(toX, toY)){
+				dangerousPieces.add(new Tuple<Integer, Integer>(fromX, fromY));
 				return true;
+			}
 		}
 		else if (piece == 4) {
-			if (checkMoveBishop(toX, toY))
+			if (checkMoveBishop(toX, toY)){
+				dangerousPieces.add(new Tuple<Integer, Integer>(fromX, fromY));
 				return true;
+			}
 		}
 		else if (piece == 5) {
-			if (checkMoveKing(toX, toY))
+			if (checkMoveKing(toX, toY)){
+				dangerousPieces.add(new Tuple<Integer, Integer>(fromX, fromY));
 				return true;
+			}
 		}
 		else if (piece == 6) {
-			if (checkMoveQueen(toX, toY))
+			if (checkMoveQueen(toX, toY)){
+				dangerousPieces.add(new Tuple<Integer, Integer>(fromX, fromY));
 				return true;
+			}
 		}
 		return false;
 	}
@@ -473,22 +488,177 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return null;
 	}
 	
+	public boolean cantAvoidDangerousPiece() {
+		if (dangerousPieces.size() > 1)
+			return true;
+		Iterator<Tuple<Integer, Integer>> ite = dangerousPieces.iterator();
+		while (ite.hasNext())
+		{
+			Tuple<Integer, Integer> exp = ite.next();
+			
+			if (pieceInDanger(exp.player, exp.piece) || !pieceCantObstructAttack(exp)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkObstructRook(Tuple<Integer, Integer> ennemy, Tuple<Integer, Integer> kingPos) {
+		if (kingPos.player == ennemy.player) {
+			if (kingPos.piece > ennemy.piece)
+			{
+				//Attaque de haut
+				for (int y = ennemy.piece; y != kingPos.piece; ++y) {
+					swapPlayers();
+					if (pieceInDanger(kingPos.player, y)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+			else {
+				//Attaque de bas
+				for (int y = ennemy.piece; y != kingPos.piece; --y) {
+					swapPlayers();
+					if (pieceInDanger(kingPos.player, y)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+		}
+		else {
+			if (kingPos.player > ennemy.player) {
+				//Attaque d'en bas
+				for (int x = ennemy.player; x != kingPos.player; ++x) {
+					swapPlayers();
+					if (pieceInDanger(x, kingPos.piece)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+			else {
+				//Attaque d'en haut
+				for (int x = ennemy.player; x != kingPos.player; --x) {
+					swapPlayers();
+					if (pieceInDanger(x, kingPos.piece)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkObstructBishop(Tuple<Integer, Integer> ennemy, Tuple<Integer, Integer> kingPos) {
+		if (kingPos.piece < ennemy.piece) { //haut
+			if (kingPos.player < ennemy.player) //gauche
+			{
+				//Attaque de haut gauche
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, ++x) {
+					swapPlayers();
+					if (pieceInDanger(x, y)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+			else { //droite
+				//Attaque de haut droite
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, --x) {
+					swapPlayers();
+					if (pieceInDanger(x, y)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+		}
+		else { //bas
+			if (kingPos.player < ennemy.player) //gauche
+			{
+				//Attaque de bas gauche
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, ++x) {
+					swapPlayers();
+					if (pieceInDanger(x, y)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+			else { //droite
+				//Attaque de bas droite
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, --x) {
+					swapPlayers();
+					if (pieceInDanger(x, y)) {
+						return true;
+					}
+					swapPlayers();
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean pieceCantObstructAttack(Tuple<Integer, Integer> ennemy) {
+		int piece = board[ennemy.player][ennemy.piece].piece;
+		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
+		if (piece == 1 || piece == 3 || piece == 5)
+			return true;
+		if (piece == 2) {
+			return checkObstructRook(ennemy, kingPos);
+		}
+		else if (piece == 4) {
+			return checkObstructBishop(ennemy, kingPos);
+		}
+		else if (piece == 6) {
+			if (!checkObstructRook(ennemy, kingPos) && !checkObstructBishop(ennemy, kingPos))
+				return false;
+			else
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean kingNoAvailableMove() {
+		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
+		int beginX = kingPos.player - 1;
+		int beginY = kingPos.piece -1;
+		for (int x = 0; x < 3; ++x) {
+			for (int y = 0; y < 3; ++y) {
+				if (((beginX + x) >= 0 && (beginY + y) >= 0) && ((beginX + x) <= 7 && (beginY + y) <= 7)) {
+					if (!pieceInDanger(beginX + x, beginY + y) && tryMove(beginX + x, beginY + y))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean determineEndGame() {
+		if (kingNoAvailableMove() && cantAvoidDangerousPiece()/* && pieceCantObstructAttack()*/)
+			return true;
+		return false;
+	}
+	
 	public boolean launchMove(int x, int y) {
 		System.out.println(selected.player + "/" + selected.piece + " to " + x + "/" + y);
-		Tuple <Integer, Integer> kingPos = getKingPosition(current_player);
-		if (board[selected.player][selected.piece].piece == 5) {
-			kingPos.player = x;
-			kingPos.piece = y;
-		}
-		if (!pieceInDanger(kingPos.player, kingPos.piece)){
+		Tuple <Integer, Integer> oldPiecePos = new Tuple<Integer, Integer>(selected.player, selected.piece);
+		Tuple <Integer, Integer> oldNewPiece = new Tuple<Integer, Integer>(board[x][y].player, board[x][y].piece);
 		 board[x][y] = new Tuple<Integer, Integer>(board[selected.player][selected.piece].player, board[selected.player][selected.piece].piece);
 		 board[selected.player][selected.piece].piece = 0;
 		 board[selected.player][selected.piece].player = 0;
-		 return true;
-		}
-		System.out.println("ECHEC");
-		return false;
-	}
+	    Tuple <Integer, Integer> kingPos = getKingPosition(current_player);
+		     if (!pieceInDanger(kingPos.player, kingPos.piece))
+				 return true;
+			 else {
+				 board[oldPiecePos.player][oldPiecePos.piece] = new Tuple<Integer, Integer>(board[x][y].player, board[x][y].piece);
+				 board[x][y] = oldNewPiece;
+				 return false;
+			 }
+	    }
 	
 	public void redrawClick(Graphics g2d, int x, int y)
 	{
@@ -512,14 +682,6 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	/** private functions **/
-	
-	
-	// determines if an end game state has been reached. this will happen if there are zero spaces on the board, if one
-	// player has lost all of their pieces, or there are no valid moves left for either player
-	private boolean determineEndGame() 
-	{
-		return (true);
-	}	
 	
 	private void drawBoard(Graphics2D g2d) 
 	{
@@ -610,6 +772,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	{
 		// Initialise all cells in the array to have a value of zero
 		board = new Tuple[8][8];
+		dangerousPieces = new Vector<Tuple<Integer, Integer>>();
 		for (int x = 0; x < 8; x++)
 		{
 			for (int y = 0; y < 8; y++)
@@ -729,6 +892,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 
 	/** private fields **/
+	Vector<Tuple<Integer, Integer>> dangerousPieces;
 	Hashtable<Tuple<Integer, Integer>, BufferedImage> images;
 	Tuple<Integer, Integer> board[][];						// the state of the game board
 	int oldx, oldy;						// denotes where the player clicked when he pressed the mouse button
