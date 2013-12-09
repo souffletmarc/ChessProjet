@@ -124,10 +124,11 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	public boolean checkAttackPion(int x, int y) {
-		int depX = selected.player - x;
-		int depY = selected.piece - y;
-		
-		if ((depX == 1 || depX == -1) && ((depY == -1 && current_player == 2) || (depY == 1 && current_player == 1)) && board[x][y].player == getOtherPlayer()) {
+		int depX = x - selected.player;
+		int depY = y - selected.piece;
+
+		System.out.println("Check pion attack from " + selected.player + "/" + selected.piece + " to " + x + "/" + y);
+		if ((depX == 1 || depX == -1) && ((depY == -1 && current_player == 1) || (depY == 1 && current_player == 2)) && board[x][y].player == getOtherPlayer()) {
 			return true;
 		}
 		
@@ -135,19 +136,19 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	public boolean checkMovePion(int x, int y) {
-		int depX = selected.player - x;
-		int depY = selected.piece - y;
+		int depX = x - selected.player;
+		int depY = y - selected.piece;
 
-		if (depX == 0 && ((depY == -1 && current_player == 2) || (depY == 1 && current_player == 1)) && board[x][y].player == 0)
+		if (depX == 0 && ((depY == -1 && current_player == 1) || (depY == 1 && current_player == 2)) && board[x][y].player == 0)
 			return true;
-		else if (((current_player == 1 && depX == 0 && depY == 2 && selected.piece == 6) || (current_player == 2 && depX == 0 && depY == -2 && selected.piece == 1)) && board[x][y].player == 0)
+		else if (((current_player == 1 && depX == 0 && depY == -2 && selected.piece == 6) || (current_player == 2 && depX == 0 && depY == 2 && selected.piece == 1)) && board[x][y].player == 0)
 			return true;
 		return false;
 	}
 	
 	public boolean checkMoveKnight(int x, int y) {
-		int depX = selected.player - x;
-		int depY = selected.piece - y;
+		int depX = x - selected.player;
+		int depY = y - selected.piece;
 
 		
 		if (((depX == 2 && depY == 1) || (depX == -2 && depY == 1) ||
@@ -160,8 +161,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	public boolean checkMoveKing(int x, int y) {
-		int depX = selected.player - x;
-		int depY = selected.piece - y;
+		int depX = x - selected.player;
+		int depY = y - selected.piece;
 
 		
 		if (((depX == 0 && depY == 1) || (depX == 1 && depY == 1) ||
@@ -395,8 +396,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 				}
 				else if (selected != null)
 				{
-					if (tryMove(newx, newy)) {
-						move(newx, newy);
+					if (tryMove(newx, newy) && launchMove(newx, newy)) {
 						selected = null;
 						paintComponent(getGraphics());
 						swapPlayers();
@@ -411,9 +411,12 @@ class ReversiWidget extends JComponent implements MouseListener {
 		int piece = board[fromX][fromY].piece;
 		selected.player = fromX;
 		selected.piece = fromY;
+		System.out.println("Current piece = " + piece + " // King position: " + toX + "/" + toY + " could be attack by " + fromX + "/" + fromY + "?");
 		if (piece == 1) {
-			if (checkAttackPion(toX, toY))
+			if (checkAttackPion(toX, toY)) {
+				System.out.println("Yes !");
 				return true;
+			}
 		}
 		else if (piece == 2) {
 			if (checkMoveRook(toX, toY) )
@@ -439,12 +442,24 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	public boolean pieceInDanger(int px, int py) {
+		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
+		System.out.println("King position: " + px + "/" + py);
+		swapPlayers();
+
 		for (int x = 0; x < 8; ++x) {
 			for (int y = 0; y < 8; ++y) {
-				if (board[x][y].player == getOtherPlayer() && canAttack(x, y, px, py))
+				if (board[x][y].player == current_player && canAttack(x, y, px, py))
+				{
+					swapPlayers();
+
+					selected = os;
 					return true;
+				}
 			}
 		}
+		swapPlayers();
+
+		selected = os;
 		return false;
 	}
 	
@@ -458,17 +473,21 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return null;
 	}
 	
-	public void move(int x, int y) {
+	public boolean launchMove(int x, int y) {
 		System.out.println(selected.player + "/" + selected.piece + " to " + x + "/" + y);
 		Tuple <Integer, Integer> kingPos = getKingPosition(current_player);
-		//if (!pieceInDanger(kingPos.player,kingPos.piece)){
+		if (board[selected.player][selected.piece].piece == 5) {
+			kingPos.player = x;
+			kingPos.piece = y;
+		}
+		if (!pieceInDanger(kingPos.player, kingPos.piece)){
 		 board[x][y] = new Tuple<Integer, Integer>(board[selected.player][selected.piece].player, board[selected.player][selected.piece].piece);
 		 board[selected.player][selected.piece].piece = 0;
 		 board[selected.player][selected.piece].player = 0;
-		/*}
-		else {
-			System.out.println("ECHEC");
-		}*/
+		 return true;
+		}
+		System.out.println("ECHEC");
+		return false;
 	}
 	
 	public void redrawClick(Graphics g2d, int x, int y)
