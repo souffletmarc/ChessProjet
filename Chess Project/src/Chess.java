@@ -220,7 +220,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	public String choiceOfPion()
 	{
 		Object choices[] = {"Rook", "Knight", "Queen", "Bishop"};
-		String input = (String) JOptionPane.showInputDialog(this, "Choose a pion", "Choice", JOptionPane.YES_OPTION, null, choices, "Rook");
+		String input = (String) JOptionPane.showInputDialog(this, "Choose a pion", "Choice",JOptionPane.PLAIN_MESSAGE, null, choices, "Rook");
 		return input;
 	}
 	
