@@ -708,11 +708,11 @@ class ReversiWidget extends JComponent implements MouseListener {
 		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
 		Tuple<Integer, Integer> kingPosOth = getKingPosition(getOtherPlayer());
 
-		/*if (CheckStalemate())
+		if (CheckStalemate())
 		{
 			System.out.println("Stalemate");
 			return true;
-		}*/
+		}
 		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false, false, false))
 			System.out.println("Check for the " + (getOtherPlayer() == 1 ? "white" : "black") + " player.");
 		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false, false, false) && kingNoAvailableMove() && cantAvoidDangerousPiece()) {
@@ -837,85 +837,85 @@ class ReversiWidget extends JComponent implements MouseListener {
 	
 	public boolean CheckStalemate()
 	{
-	int kingW = 0;
-	int queenW = 0;
-	int pawnW = 0;
-	int rookW = 0;
-	int bishopW = 0;
-	int knightW = 0;
-	int nbplayer1 = 0;
-	int kingB = 0;
-	int queenB = 0;
-	int pawnB = 0;
-	int rookB = 0;
-	int bishopB = 0;
-	int knightB = 0; 
-	int nbplayer2 = 0;
-	for (int x = 0; x < 8; x++)
-	{
-	for (int y = 0; y < 8; y++)
-	{
-	if (board[x][y].player == 1)
-	{
-	// Blanc
-	if (board[x][y].piece == 1)
-	pawnW++;
-	else if(board[x][y].piece == 2)
-	rookW++;
-	else if(board[x][y].piece == 3)
-	knightW++;
-	else if(board[x][y].piece == 4)
-	bishopW++;
-	else if(board[x][y].piece == 5)
-	kingW++;
-	else if(board[x][y].piece == 6)
-	queenW++;
-	nbplayer1++;
-	}
-	else
-	{
-	// Noir
-	if (board[x][y].piece == 1)
-	pawnB++;
-	else if(board[x][y].piece == 2)
-	rookB++;
-	else if(board[x][y].piece == 3)
-	knightB++;
-	else if(board[x][y].piece == 4)
-	bishopB++;
-	else if(board[x][y].piece == 5)
-	kingB++;
-	else if(board[x][y].piece == 6)
-	queenB++;
-	nbplayer2++;
-	}
-	}
-	}
-	//king and a queen
-	if (nbplayer1 >= 2 && nbplayer2 >= 2)
-	{
-	if (queenW <= 1 && queenB <= 1)
-	return true;
-	else if (rookW <= 1 && rookB <= 1)
-	return true;
-	if (bishopB <= 1 && bishopW <= 1 && knightB <= 1 && knightW <= 1)
-	return true;
-	else if (bishopB == 2 && bishopW == 2)
-	{
-	//check color case et dans ce cas la 
-	// y % 2 == x % 2 case claire
-	return true;
-	}
-	else if (pawnB >= 1 && pawnW >= 1)
-	{
-	return true;
-	}
-	}
+		int kingW = 0;
+		int queenW = 0;
+		int pawnW = 0;
+		int rookW = 0;
+		int bishopW = 0;
+		int knightW = 0;
+		int nbplayer1 = 0;
+		int kingB = 0;
+		int queenB = 0;
+		int pawnB = 0;
+		int rookB = 0;
+		int bishopB = 0;
+		int knightB = 0; 
+		int nbplayer2 = 0;
+		
+		for (int x = 0; x < 8; x++)
+		{
+			for (int y = 0; y < 8; y++)
+			{
+				if (board[x][y].player == 1)
+				{
+					// Blanc
+					if (board[x][y].piece == 1)
+						pawnW++;
+					else if(board[x][y].piece == 2)
+						rookW++;
+					else if(board[x][y].piece == 3)
+						knightW++;
+					else if(board[x][y].piece == 4)
+						bishopW++;
+					else if(board[x][y].piece == 5)
+						kingW++;
+					else if(board[x][y].piece == 6)
+						queenW++;
+					nbplayer1++;
+				}
+				else
+				{
+					// Noir
+					if (board[x][y].piece == 1)
+						pawnB++;
+					else if(board[x][y].piece == 2)
+						rookB++;
+					else if(board[x][y].piece == 3)
+						knightB++;
+					else if(board[x][y].piece == 4)
+						bishopB++;
+					else if(board[x][y].piece == 5)
+						kingB++;
+					else if(board[x][y].piece == 6)
+						queenB++;
+					nbplayer2++;
+				}
+			}
+		}
+		//king and a queen
+		if (nbplayer1 >= 2 && nbplayer2 >= 2)
+		{
+			if (queenW <= 1 && queenB <= 1)
+				return false;
+			else if (rookW <= 1 && rookB <= 1)
+				return false;
+			if (bishopB <= 1 && bishopW <= 1 && knightB <= 1 && knightW <= 1)
+				return false;
+				else if (bishopB == 2 && bishopW == 2)
+				{
+					//check color case et dans ce cas la 
+					// y % 2 == x % 2 case claire
+					return false;
+				}
+				else if (pawnB >= 1 && pawnW >= 1)
+				{
+					return false;
+				}
+		}
 	System.out.println("PawnW "+pawnW+ " KnightW "+knightW+ " RookW "+rookW+ " BishopW "+bishopW+ " kingW "+kingW+ " queenW "+queenW);
 	System.out.println("PawnB "+pawnB+ " KnightB "+knightB+ " RookB "+rookB+ " BishopB "+bishopB+ " kingB "+kingB+ " queenB "+queenB);
-	return false;
+	return true;
 	}
-
 	
 	private BufferedImage getPieceImage(Tuple<Integer, Integer> t) {	    
 	    for (Entry<Tuple<Integer, Integer>, BufferedImage> entry : images.entrySet())
