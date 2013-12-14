@@ -180,6 +180,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 	public boolean tryMove(int x, int y) {
 		int piece = board[this.selected.player][this.selected.piece].piece;
 		
+		System.out.println("KFEJFKLEJWLJWEKLFJEFKLJELWKFJ   " + piece);
+		
 		if (piece == 1) {
 			if (checkMovePion(x, y) || checkAttackPion(x,y)) {
 				changePion(x, y);
@@ -471,13 +473,14 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
-	public boolean pieceInDanger(int px, int py, boolean checkEnnemy) {
+	//si checkennemy = false, la fonction check si des pions du player en cour peuvent attaquer PX/PY
+	public boolean pieceInDanger(int px, int py, boolean checkEnnemy, boolean forgetKing) {
 		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
 		if (checkEnnemy)
 			swapPlayers();
 		for (int x = 0; x < 8; ++x) {
 			for (int y = 0; y < 8; ++y) {
-				if ((px != x || py != y) && board[x][y].player == current_player && canAttack(x, y, px, py, checkEnnemy))
+				if ((px != x || py != y) && board[x][y].player == current_player && canAttack(x, y, px, py, checkEnnemy) && ((forgetKing == true && board[x][y].piece != 5 /*&& board[x][y].player == current_player*/) || (forgetKing == false)))
 				{
 					if (checkEnnemy)
 						swapPlayers();
@@ -511,7 +514,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		//Iterator<Tuple<Integer, Integer>> ite = dangerousPieces.iterator();
 		Tuple<Integer, Integer> dp = dangerousPieces.elementAt(0);
 		boolean test = pieceCantObstructAttack(dp);
-		if (pieceInDanger(dp.player, dp.piece, true) || !pieceCantObstructAttack(dp)) {
+		if (pieceInDanger(dp.player, dp.piece, true, false) || !pieceCantObstructAttack(dp)) {
 			System.out.println("We can (false) avoid dangerous piece / COA = " + test);
 			return false;
 		}
@@ -519,31 +522,31 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return true;
 	}
 	
-	public boolean checkObstructRook(Tuple<Integer, Integer> ennemy, Tuple<Integer, Integer> kingPos) {
+	public boolean checkObstructRook(Tuple<Integer, Integer> ennemy/*piece du joueur courant*/, Tuple<Integer, Integer> kingPos/*roi adverse mis en echec par ennemy*/) {
 		if (kingPos.player == ennemy.player) {
 			if (kingPos.piece > ennemy.piece)
 			{
-				//Attaque de haut
+				//Attaque d'en bas
 				for (int y = ennemy.piece; y != kingPos.piece; ++y) {
-					swapPlayers();
+					//swapPlayers();
 					System.out.println("b1");
-					if (pieceInDanger(kingPos.player, y, true)) {
-						swapPlayers();
+					if (pieceInDanger(ennemy.player, y, true, true)) {
+						//swapPlayers();
 						return true;
 					}
-					swapPlayers();
+//					swapPlayers();
 				}
 			}
 			else {
-				//Attaque de bas
+				//Attaque haut
 				for (int y = ennemy.piece; y != kingPos.piece; --y) {
-					swapPlayers();
+					//swapPlayers();
 					System.out.println("b2");
-					if (pieceInDanger(kingPos.player, y, true)) {
-						swapPlayers();
+					if (pieceInDanger(ennemy.player, y, true, true)) {
+						//swapPlayers();
 						return true;
 					}
-					swapPlayers();
+					//swapPlayers();
 				}
 			}
 		}
@@ -551,25 +554,25 @@ class ReversiWidget extends JComponent implements MouseListener {
 			if (kingPos.player > ennemy.player) {
 				//Attaque d'en bas
 				for (int x = ennemy.player; x != kingPos.player; ++x) {
-					swapPlayers();
+					//swapPlayers();
 					System.out.println("b3");
-					if (pieceInDanger(x, kingPos.piece, true)) {
-						swapPlayers();
+					if (pieceInDanger(x, ennemy.piece, true, true)) {
+						//swapPlayers();
 						return true;
 					}
-					swapPlayers();
+					//swapPlayers();
 				}
 			}
 			else {
 				//Attaque d'en haut
 				for (int x = ennemy.player; x != kingPos.player; --x) {
-					swapPlayers();
+					//swapPlayers();
 					System.out.println("b4 ");
-					if (pieceInDanger(x, kingPos.piece, true)) {
-						swapPlayers();
+					if (pieceInDanger(x, ennemy.piece, true, true)) {
+					//	swapPlayers();
 						return true;
 					}
-					swapPlayers();
+					//swapPlayers();
 				}
 			}
 		}
@@ -582,26 +585,26 @@ class ReversiWidget extends JComponent implements MouseListener {
 			{
 				//Attaque de haut gauche
 				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, --x) {
-					swapPlayers();
-					//System.out.println("b5" + x + "/" + kingPos.player + " and " + y + "/" + kingPos.piece);
-					if (pieceInDanger(x, y, true)) {
-						swapPlayers();
+					//swapPlayers();
+					System.out.println("b5" + x + "/" + kingPos.player + " and " + y + "/" + kingPos.piece);
+					if (pieceInDanger(x, y, true, true)) {
+						//swapPlayers();
 						return true;
 					}
-					swapPlayers();
+//					swapPlayers();
 //break;
 				}
 			}
 			else { //droite
 				//Attaque de haut droite
-				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, --x) {
-					swapPlayers();
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, ++x) {
+	//				swapPlayers();
 					System.out.println("b6");
-					if (pieceInDanger(x, y, true)) {
-						swapPlayers();
+					if (pieceInDanger(x, y, true, true)) {
+		//				swapPlayers();
 						return true;
 					}
-					swapPlayers();
+			//		swapPlayers();
 				}
 			}
 		}
@@ -609,26 +612,26 @@ class ReversiWidget extends JComponent implements MouseListener {
 			if (kingPos.player < ennemy.player) //gauche
 			{
 				//Attaque de bas gauche
-				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, ++x) {
-					swapPlayers();
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, --x) {
+				//	swapPlayers();
 					System.out.println("b7");
-					if (pieceInDanger(x, y, true)) {
-						swapPlayers();
+					if (pieceInDanger(x, y, true, true)) {
+					//	swapPlayers();
 						return true;
 					}
-					swapPlayers();
+					//swapPlayers();
 				}
 			}
 			else { //droite
 				//Attaque de bas droite
-				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, --x) {
-					swapPlayers();
+				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, ++x) {
+				//	swapPlayers();
 					System.out.println("b8");
-					if (pieceInDanger(x, y, true)) {
-						swapPlayers();
+					if (pieceInDanger(x, y, true, true)) {
+					//	swapPlayers();
 						return true;
 					}
-					swapPlayers();
+					//swapPlayers();
 				}
 			}
 		}
@@ -656,23 +659,36 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	public boolean kingNoAvailableMove() {
-		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
+		Tuple<Integer, Integer> kingPos = getKingPosition(getOtherPlayer());
+		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
+		selected.player = kingPos.player;
+		selected.piece = kingPos.piece;
+		board[kingPos.player][kingPos.piece].player = 0;
+		board[kingPos.player][kingPos.piece].piece = 0;		
 		int beginX = kingPos.player - 1;
 		int beginY = kingPos.piece -1;
+		swapPlayers();
 		for (int x = 0; x < 3; ++x) {
 			for (int y = 0; y < 3; ++y) {
 				if (((beginX + x) >= 0 && (beginX + x) <= 7) && ((beginY + y) >= 0 && (beginY + y) <= 7)) {
-					//System.out.println("King No Available Move on " + (beginX + x) + "/" + (beginY + y) + "?");
-					if (!pieceInDanger(beginX + x, beginY + y, true) && tryMove(beginX + x, beginY + y))
+					System.out.println("King No Available Move on " + (beginX + x) + "/" + (beginY + y) + "?");
+					if (!pieceInDanger(beginX + x, beginY + y, true, false) && tryMove(beginX + x, beginY + y))
 					{
+						swapPlayers();
+						selected = os;
+						board[kingPos.player][kingPos.piece].player = getOtherPlayer();
+						board[kingPos.player][kingPos.piece].piece = 5;	
 						System.out.println("CAN MOVE");
 						return false;
 					}
 				}
 			}
 		}
+		swapPlayers();
+		selected = os;
+		board[kingPos.player][kingPos.piece].player = getOtherPlayer();
+		board[kingPos.player][kingPos.piece].piece = 5;	
 		System.out.println("no move available");
-
 		return true;
 	}
 	
@@ -680,9 +696,9 @@ class ReversiWidget extends JComponent implements MouseListener {
 		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
 		Tuple<Integer, Integer> kingPosOth = getKingPosition(getOtherPlayer());
 
-		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false))
+		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false, false))
 			System.out.println("Check for the " + (getOtherPlayer() == 1 ? "white" : "black") + " player.");
-		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false) && kingNoAvailableMove() && cantAvoidDangerousPiece()/* && pieceCantObstructAttack()*/) {
+		if (/*pieceInDanger(kingPosOth.player, kingPosOth.piece, false, false) && */kingNoAvailableMove()/* && cantAvoidDangerousPiece()/* && pieceCantObstructAttack()*/) {
 			System.out.println("Checkmate");
 			return true;
 		}
@@ -697,7 +713,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		 board[selected.player][selected.piece].piece = 0;
 		 board[selected.player][selected.piece].player = 0;
 	    Tuple <Integer, Integer> kingPos = getKingPosition(current_player);
-		     if (!pieceInDanger(kingPos.player, kingPos.piece, true))
+		     if (!pieceInDanger(kingPos.player, kingPos.piece, true, false))
 				 return true;
 			 else {
 				 board[oldPiecePos.player][oldPiecePos.piece] = new Tuple<Integer, Integer>(board[x][y].player, board[x][y].piece);
