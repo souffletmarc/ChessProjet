@@ -708,11 +708,11 @@ class ReversiWidget extends JComponent implements MouseListener {
 		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
 		Tuple<Integer, Integer> kingPosOth = getKingPosition(getOtherPlayer());
 
-		if (CheckStalemate())
+		/*if (CheckStalemate())
 		{
 			System.out.println("Stalemate");
 			return true;
-		}
+		}*/
 		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false, false, false))
 			System.out.println("Check for the " + (getOtherPlayer() == 1 ? "white" : "black") + " player.");
 		if (pieceInDanger(kingPosOth.player, kingPosOth.piece, false, false, false) && kingNoAvailableMove() && cantAvoidDangerousPiece()) {
