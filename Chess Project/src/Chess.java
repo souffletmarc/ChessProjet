@@ -118,6 +118,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 	}
 	
+	// COMMENTAIRE MARCO
 	public int getOtherPlayer()
 	{
 		if (current_player == 1)
@@ -125,7 +126,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		else
 			return 1;
 	}
-	
+	// COMMENTAIRE MARCO
 	public boolean checkAttackPion(int x, int y) {
 		int depX = x - selected.player;
 		int depY = y - selected.piece;
@@ -137,7 +138,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 		return false;
 	}
-	
+	// COMMENTAIRE MARCO
 	public boolean checkMovePion(int x, int y) {
 		int depX = x - selected.player;
 		int depY = y - selected.piece;
@@ -148,7 +149,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 			return true;
 		return false;
 	}
-	
+	// COMMENTAIRE MARCO
 	public boolean checkMoveKnight(int x, int y) {
 		int depX = x - selected.player;
 		int depY = y - selected.piece;
@@ -162,7 +163,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		return false;
 	}
-	
+	// COMMENTAIRE MARCO
 	public boolean checkMoveKing(int x, int y) {
 		int depX = x - selected.player;
 		int depY = y - selected.piece;
@@ -177,6 +178,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	// COMMENTAIRE CYNT
 	public boolean tryMove(int x, int y) {
 		int piece = board[this.selected.player][this.selected.piece].piece;
 		
@@ -224,6 +226,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	// COMMENTAIRE CYNT
 	public String choiceOfPion()
 	{
 		Object choices[] = {"Rook", "Knight", "Queen", "Bishop"};
@@ -231,6 +234,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return input;
 	}
 	
+	// COMMENTAIRE CYNT
 	public void changePion(int x, int y)
 	{
 		String value = null;
@@ -263,6 +267,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 			}
 		}
 	}
+	// COMMENTAIRE CYNT
 	public boolean checkMoveRook(int x, int y)
 	{
 		int depX = x - selected.player;
@@ -313,6 +318,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 			return false;
 	}
+	// COMMENTAIRE CYNT
 	public boolean checkMoveBishop(int x, int y)
 	{
 		//System.out.println("Bishop TEST move from " + selected.player + "/" + selected.piece + " to " + x + "/" + y);
@@ -373,7 +379,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		else
 			return false;
 	}
-	
+	// COMMENTAIRE CYNT
 	public boolean checkMoveQueen(int x, int y)
 	{
 		if (checkMoveBishop(x, y) || checkMoveRook(x, y))
@@ -381,6 +387,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	// will react to mouse release events on the widget
+	
+	// COMMENTAIRE CYNT
 	public void mouseReleased(MouseEvent event) {
 	
 		// Save the x and y position when the left mouse button is released and convert the coordinate to indexes of the array
@@ -419,7 +427,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 			}
 		}
 	}
-	
+	// COMMENTAIRE CYNT
 	public boolean canAttack(int fromX, int fromY, int toX, int toY, boolean checkEnnemy, boolean fromObstruct) {
 		int piece = board[fromX][fromY].piece;
 		selected.player = fromX;
@@ -427,6 +435,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		if (!checkEnnemy)
 			dangerousPieces.clear();
 		//System.out.println("Current piece = " + piece + " // King position: " + toX + "/" + toY + " could be attack by " + fromX + "/" + fromY + "?");
+		// Boolean pour le obstruct piece du pion et liste des pieces dangereuses
 		if (piece == 1) {
 			if ((fromObstruct == true ? checkMovePion(toX, toY) : checkAttackPion(toX, toY))) {
 				if (!checkEnnemy)
@@ -476,6 +485,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	// COMMENTAIRE MARCO
 	//si checkennemy = false, la fonction check si des pions du player en cour peuvent attaquer PX/PY
 	public boolean pieceInDanger(int px, int py, boolean checkEnnemy, boolean forgetKing, boolean fromObstruct) {
 		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
@@ -500,6 +510,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	// COMMENTAIRE MARCO
 	public Tuple<Integer, Integer> getKingPosition(int player) {
 		for (int x = 0; x < 8; ++x) {
 			for (int y = 0; y < 8; ++y) {
@@ -509,7 +520,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		return null;
 	}
-	
+	// COMMENTAIRE CYNT
 	public boolean cantAvoidDangerousPiece() {
 		if (dangerousPieces.size() > 1) {
 			return true;
@@ -525,6 +536,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return true;
 	}
 	
+	// COMMENTAIRE CYNT
 	public boolean checkObstructRook(Tuple<Integer, Integer> ennemy/*piece du joueur courant*/, Tuple<Integer, Integer> kingPos/*roi adverse mis en echec par ennemy*/) {
 		if (kingPos.player == ennemy.player) {
 			if (kingPos.piece > ennemy.piece)
@@ -581,7 +593,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		return false;
 	}
-	
+	// COMMENTAIRE MARCO
 	public boolean checkObstructBishop(Tuple<Integer, Integer> ennemy, Tuple<Integer, Integer> kingPos) {
 		if (kingPos.piece < ennemy.piece) { //haut
 			if (kingPos.player < ennemy.player) //gauche
@@ -640,7 +652,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		return false;
 	}
-	
+	// COMMENTAIRE CYNT
 	public boolean pieceCantObstructAttack(Tuple<Integer, Integer> ennemy) {
 		int piece = board[ennemy.player][ennemy.piece].piece;
 		Tuple<Integer, Integer> kingPos = getKingPosition(getOtherPlayer());
@@ -669,6 +681,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	// COMMENTAIRE MARCO
 	public boolean kingNoAvailableMove() {
 		Tuple<Integer, Integer> kingPos = getKingPosition(getOtherPlayer());
 		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
@@ -704,6 +717,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return true;
 	}
 	
+	// COMMENTAIRE CYNT
 	public boolean determineEndGame() {
 		Tuple<Integer, Integer> kingPos = getKingPosition(current_player);
 		Tuple<Integer, Integer> kingPosOth = getKingPosition(getOtherPlayer());
@@ -722,6 +736,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	// COMMENTAIRE MARCO
 	public boolean launchMove(int x, int y) {
 		//System.out.println(selected.player + "/" + selected.piece + " to " + x + "/" + y);
 		Tuple <Integer, Integer> oldPiecePos = new Tuple<Integer, Integer>(selected.player, selected.piece);
@@ -738,7 +753,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 				 return false;
 			 }
 	    }
-	
+	// COMMENTAIRE MARCO
 	public void redrawClick(Graphics g2d, int x, int y)
 	{
 		int		sizeCellX = (getWidth() / 8);
@@ -761,7 +776,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	/** private functions **/
-	
+	// COMMENTAIRE CYNT
 	private void drawBoard(Graphics2D g2d) 
 	{
 		int		sizeCellX = getWidth() / 8;
@@ -820,6 +835,8 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	// will draw the pieces that are currently on the board. assumes a widget size of 640 square
+	
+	// COMMENTAIRE MARCO
 	private void drawPieces(Graphics2D g2d) {
 		// Computation the size of the cells
 		int		sizeCellX = (getWidth() / 8);
@@ -835,6 +852,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 	}
 	
+	// COMMENTAIRE CYNT
 	public boolean CheckStalemate()
 	{
 		int kingW = 0;
@@ -917,6 +935,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	return true;
 	}
 	
+	// COMMENTAIRE MARCO
 	private BufferedImage getPieceImage(Tuple<Integer, Integer> t) {	    
 	    for (Entry<Tuple<Integer, Integer>, BufferedImage> entry : images.entrySet())
 	    {
@@ -928,6 +947,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 	}
 	
 	// will initialise the game board to the starting state
+	// COMMENTAIRE MARCO
 	private void initialState() throws IOException 
 	{
 		// Initialise all cells in the array to have a value of zero
@@ -1051,6 +1071,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 			current_player = 1;
 	}
 
+	// COMMENTAIRE CYNT
 	/** private fields **/
 	Vector<Tuple<Integer, Integer>> dangerousPieces;
 	Hashtable<Tuple<Integer, Integer>, BufferedImage> images;
