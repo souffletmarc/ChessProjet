@@ -118,7 +118,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		
 	}
 	
-	// COMMENTAIRE MARCO
+	// This method will return the ID of the other player (current player's ennemy)
 	public int getOtherPlayer()
 	{
 		if (current_player == 1)
@@ -126,35 +126,36 @@ class ReversiWidget extends JComponent implements MouseListener {
 		else
 			return 1;
 	}
-	// COMMENTAIRE MARCO
+	// This method will check if the unit (pion type) can attack then return a boolean, true if pion can attack, else false 
 	public boolean checkAttackPion(int x, int y) {
-		int depX = x - selected.player;
-		int depY = y - selected.piece;
+		int depX = x - selected.player; // Number of move to do on X axes
+		int depY = y - selected.piece; // Number of move to do on X axes
 
-		//System.out.println("Check pion attack from " + selected.player + "/" + selected.piece + " to " + x + "/" + y);
+		//Check the available square where pion can attack and check for each square if the asked movement is possible
 		if ((depX == 1 || depX == -1) && ((depY == -1 && current_player == 1) || (depY == 1 && current_player == 2)) && board[x][y].player == getOtherPlayer()) {
 			return true;
 		}
 		
 		return false;
 	}
-	// COMMENTAIRE MARCO
+	// This method will check if the unit (pion type) can move then return a boolean, true if pion can move, else false 
 	public boolean checkMovePion(int x, int y) {
-		int depX = x - selected.player;
-		int depY = y - selected.piece;
+		int depX = x - selected.player; // Number of move to do on X axes
+		int depY = y - selected.piece; // Number of move to do on X axes
 
+		//Check the available square where pion can move and check for each square if the asked movement is possible
 		if (depX == 0 && ((depY == -1 && current_player == 1) || (depY == 1 && current_player == 2)) && board[x][y].player == 0)
 			return true;
 		else if (((current_player == 1 && depX == 0 && depY == -2 && selected.piece == 6) || (current_player == 2 && depX == 0 && depY == 2 && selected.piece == 1)) && board[x][y].player == 0)
 			return true;
 		return false;
 	}
-	// COMMENTAIRE MARCO
+	// This method will check if the unit (knight type) can move then return a boolean, true if knight can move, else false 
 	public boolean checkMoveKnight(int x, int y) {
 		int depX = x - selected.player;
 		int depY = y - selected.piece;
 
-		
+		//Check the available square where knight can move of attack and check for each square if the asked movement is possible
 		if (((depX == 2 && depY == 1) || (depX == -2 && depY == 1) ||
 				(depX == 2 && depY == -1) || (depX == -2 && depY == -1) ||
 				(depX == 1 && depY == 2) || (depX == -1 && depY == 2) ||
@@ -163,12 +164,12 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		return false;
 	}
-	// COMMENTAIRE MARCO
+	// This method will check if the unit (king) can move then return a boolean, true if king can move, else false 
 	public boolean checkMoveKing(int x, int y) {
 		int depX = x - selected.player;
 		int depY = y - selected.piece;
 
-		
+		//Check the available square where knight can move of attack and check for each square if the asked movement is possible
 		if (((depX == 0 && depY == 1) || (depX == 1 && depY == 1) ||
 				(depX == -1 && depY == 1) || (depX == -1 && depY == 0) ||
 				(depX == 1 && depY == 0) || (depX == -1 && depY == -1) ||
@@ -178,9 +179,11 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
+	//This method receive the coordinate where current_player want to move and try the move, depending of the selected piece.
+	//It will return true if move is possible, else false
 	public boolean tryMove(int x, int y) {
 		
-		// Save the position of the selected piece by the player
+		// Get the selected piece kind which player selected
 		int piece = board[this.selected.player][this.selected.piece].piece;
 		
 		// If the piece is a pawn then we check if the pawn can move or can attack
@@ -446,6 +449,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 						selected = null;
 						// Change the player turn
 						swapPlayers();
+						System.out.println("Player " + getOtherPlayer() + " played.\nPlayer " + current_player + ", you can now play !");
 					}
 				}
 				
@@ -529,35 +533,39 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
-	// COMMENTAIRE MARCO
-	//si checkennemy = false, la fonction check si des pions du player en cour peuvent attaquer PX/PY
+	//This function check if position of given square (px and py) can be attacked. If checkEnnemy is set to true,
+	//we will check if square(px/py) can be attacked by the other player. Else we will check if current player can attack the square.
 	public boolean pieceInDanger(int px, int py, boolean checkEnnemy, boolean forgetKing, boolean fromObstruct) {
-		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
-		if (checkEnnemy)
+		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece); //Save the selected variable because it will be change for the precessing of the function
+		if (checkEnnemy) //If checkEnnemy is set to true, we swap players only for this function to check pieces of ennemy player
 			swapPlayers();
-		for (int x = 0; x < 8; ++x) {
+		//Double loop to check all square on the board
+		for (int x = 0; x < 8; ++x) { 
 			for (int y = 0; y < 8; ++y) {
+				//If there is a piece on the current square which have a current player piece and which can attack on position (px, py) from position (x,y) we could return true
 				if ((px != x || py != y) && board[x][y].player == current_player && canAttack(x, y, px, py, checkEnnemy, fromObstruct) && ((forgetKing == true && board[x][y].piece != 5 /*&& board[x][y].player == current_player*/) || (forgetKing == false)))
 				{
+					//Before returning true we have to init the modified variable to their first value
 					if (checkEnnemy)
 						swapPlayers();
-					System.out.println("Piece in danger in " + px + "/" + py + " from " + x + "/" + y);
 					selected = os;
 					return true;
 				}
 			}
 		}
+		//Before returning false we have to init the modified variable to their first value
 		if (checkEnnemy)
 			swapPlayers();
 		selected = os;
-		System.out.println("Piece NOT in danger in " + px + "/" + py);
 		return false;
 	}
 	
-	// COMMENTAIRE MARCO
+	// This method return a tuple which contain the king position of the player given in parameter
 	public Tuple<Integer, Integer> getKingPosition(int player) {
+		//We searching on all square of the board the right king
 		for (int x = 0; x < 8; ++x) {
 			for (int y = 0; y < 8; ++y) {
+				//if currentsquare contain the player's king we return its position in a tuple, else we will return null
 				if (board[x][y].player == player && board[x][y].piece == 5)
 					return new Tuple<Integer, Integer>(x, y);
 			}
@@ -565,6 +573,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return null;
 	}
 
+	
 	public boolean cantAvoidDangerousPiece() {
 		// If the number of piece wich put in check the king are superior of 1 return false because it's impossible for one piece to obstruct two attack
 		if (dangerousPieces.size() > 1) {
@@ -579,6 +588,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return true;
 	}
 	
+	//Check if some piece can obstruct ennemy piece movement by going on a square of its way (for movement like rook)
 	public boolean checkObstructRook(Tuple<Integer, Integer> ennemy/*dangerous piece*/, Tuple<Integer, Integer> kingPos/*king in check by the ennemy*/) {
 		// If it's a vertical move
 		if (kingPos.player == ennemy.player) {
@@ -625,60 +635,47 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		return false;
 	}
-	// COMMENTAIRE MARCO
+	//Check if some piece can obstruct ennemy piece movement by going on a square of its way (for movement like bishops)
 	public boolean checkObstructBishop(Tuple<Integer, Integer> ennemy, Tuple<Integer, Integer> kingPos) {
-		if (kingPos.piece < ennemy.piece) { //haut
-			if (kingPos.player < ennemy.player) //gauche
+		if (kingPos.piece < ennemy.piece) { //Movement from the left
+			if (kingPos.player < ennemy.player) //Movement from the top (so top left)
 			{
-				//Attaque de haut gauche
+				//Check in the correct direction
 				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, --x) {
-					//swapPlayers();
-					System.out.println("b5" + x + "/" + kingPos.player + " and " + y + "/" + kingPos.piece);
+					// If the player can move some piece to the current piece (to avoid check/checkmate)
 					if (pieceInDanger(x, y, true, true, true)) {
-						//swapPlayers();
 						return true;
 					}
-//					swapPlayers();
-//break;
 				}
 			}
-			else { //droite
-				//Attaque de haut droite
+			else { //Movement from the right (so top right)
+				//Check in the correct direction
 				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; --y, ++x) {
-	//				swapPlayers();
-					System.out.println("b6");
+					// If the player can move some piece to the current piece (to avoid check/checkmate)
 					if (pieceInDanger(x, y, true, true, true)) {
-		//				swapPlayers();
 						return true;
 					}
-			//		swapPlayers();
 				}
 			}
 		}
-		else { //bas
-			if (kingPos.player < ennemy.player) //gauche
+		else { //Movement from the bottom
+			if (kingPos.player < ennemy.player) //Movement from the left (bottom left)
 			{
-				//Attaque de bas gauche
+				//Check in the correct direction
 				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, --x) {
-				//	swapPlayers();
-					System.out.println("b7");
+					// If the player can move some piece to the current piece (to avoid check/checkmate)
 					if (pieceInDanger(x, y, true, true, true)) {
-					//	swapPlayers();
 						return true;
 					}
-					//swapPlayers();
 				}
 			}
-			else { //droite
-				//Attaque de bas droite
+			else { //Movement from the right (bottom right)
+				//Check in the correct direction
 				for (int y = ennemy.piece, x = ennemy.player; y != kingPos.piece; ++y, ++x) {
-				//	swapPlayers();
-					System.out.println("b8");
+					// If the player can move some piece to the current piece (to avoid check/checkmate)
 					if (pieceInDanger(x, y, true, true, true)) {
-					//	swapPlayers();
 						return true;
 					}
-					//swapPlayers();
 				}
 			}
 		}
@@ -721,39 +718,41 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
-	// COMMENTAIRE MARCO
+	// Will check if the king can move somewhere (were it will not be attacked)
 	public boolean kingNoAvailableMove() {
-		Tuple<Integer, Integer> kingPos = getKingPosition(getOtherPlayer());
-		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece);
-		Tuple<Integer, Integer> saveCase = new Tuple<Integer, Integer>(0, 0);
-		int beginX = kingPos.player - 1;
-		int beginY = kingPos.piece -1;
-		swapPlayers();
-		for (int x = 0; x < 3; ++x) {
+		Tuple<Integer, Integer> kingPos = getKingPosition(getOtherPlayer()); //get king position
+		Tuple<Integer, Integer> os = new Tuple<Integer, Integer>(selected.player, selected.piece); //save initial selected piece before change it
+		Tuple<Integer, Integer> saveCase = new Tuple<Integer, Integer>(0, 0); // used later to save case
+		int beginX = kingPos.player - 1; //set the initial value x where loops will begin 
+		int beginY = kingPos.piece -1; //set the initial value x where loops will begin 
+		swapPlayers(); //need to swap player to check right pieces
+		//Check all movement in a 3x3 square (so all around the king)
+		for (int x = 0; x < 3; ++x) { 
 			for (int y = 0; y < 3; ++y) {
+				//Check if we are in the board
 				if (((beginX + x) >= 0 && (beginX + x) <= 7) && ((beginY + y) >= 0 && (beginY + y) <= 7) && ((board[beginX + x][beginY + y].player == 0) || (board[beginX + x][beginY + y].player == getOtherPlayer()))) {
+					//Below, we simulate the move and if it is possible,
+					//and if it will be not possible to attack it on the new square (with method pieceindanger below) we return false because King have a move available.
 					saveCase.player = board[beginX + x][beginY + y].player;
 					saveCase.piece = board[beginX + x][beginY + y].piece;
 					board[beginX + x][beginY + y].player = current_player;
 					board[beginX + x][beginY + y].piece = 5;
-					System.out.println("King No Available Move on " + (beginX + x) + "/" + (beginY + y) + "?");
 					if (!pieceInDanger(beginX + x, beginY + y, true, false, false)/* && tryMove(beginX + x, beginY + y)*/)
 					{
+						//Set modified variable to their own values before all the calculs
 						board[beginX + x][beginY + y].player = saveCase.player;
 						board[beginX + x][beginY + y].piece = saveCase.piece;
 						swapPlayers();
 						selected = os;
-						System.out.println("CAN MOVE");
-						return false;
 					}
 					board[beginX + x][beginY + y].player = saveCase.player;
 					board[beginX + x][beginY + y].piece = saveCase.piece;
 				}
 			}
 		}
+		//Set modified variable to their own values before all the calculs. Then we will return true because king can't move.
 		swapPlayers();
 		selected = os;
-		System.out.println("no move available");
 		return true;
 	}
 	
@@ -780,24 +779,27 @@ class ReversiWidget extends JComponent implements MouseListener {
 		return false;
 	}
 	
-	// COMMENTAIRE MARCO
+	// Try a move to position x y from selected piece.
+	//For example, if the move of a piece make our king in chess, the move will be impossible because this function will return false
 	public boolean launchMove(int x, int y) {
-		//System.out.println(selected.player + "/" + selected.piece + " to " + x + "/" + y);
 		Tuple <Integer, Integer> oldPiecePos = new Tuple<Integer, Integer>(selected.player, selected.piece);
 		Tuple <Integer, Integer> oldNewPiece = new Tuple<Integer, Integer>(board[x][y].player, board[x][y].piece);
+		//Simulate the move
 		 board[x][y] = new Tuple<Integer, Integer>(board[selected.player][selected.piece].player, board[selected.player][selected.piece].piece);
 		 board[selected.player][selected.piece].piece = 0;
 		 board[selected.player][selected.piece].player = 0;
 	    Tuple <Integer, Integer> kingPos = getKingPosition(current_player);
+	    	//Check if king will be in danger, if not, we return true because move can be launched
 		     if (!pieceInDanger(kingPos.player, kingPos.piece, true, false, false))
 				 return true;
 			 else {
+				 //Set originals values if move is not possible
 				 board[oldPiecePos.player][oldPiecePos.piece] = new Tuple<Integer, Integer>(board[x][y].player, board[x][y].piece);
 				 board[x][y] = oldNewPiece;
 				 return false;
 			 }
 	    }
-	// COMMENTAIRE MARCO
+	// Will redraw clicked square background for underline the selected piece (grey)
 	public void redrawClick(Graphics g2d, int x, int y)
 	{
 		int		sizeCellX = (getWidth() / 8);
@@ -875,23 +877,23 @@ class ReversiWidget extends JComponent implements MouseListener {
 	
 	// will draw the pieces that are currently on the board. assumes a widget size of 640 square
 	
-	// COMMENTAIRE MARCO
+	// Method which draw the pieces on the board
 	private void drawPieces(Graphics2D g2d) {
 		// Computation the size of the cells
 		int		sizeCellX = (getWidth() / 8);
 		int		sizeCellY = (getHeight() / 8);
 
-		
+		//Loop on all of the board
 		for (int x = 0; x < 8; x++)
 		{
 			for (int y = 0; y < 8; y++)
 			{
+				//Drawing the image given by getPieceImage which return the current piece's image
 				g2d.drawImage(getPieceImage(board[x][y]), x * sizeCellX + 8, y * sizeCellY + 8, null);
 			}
 		}
 	}
 	
-	// COMMENTAIRE CYNT
 	public boolean CheckStalemate()
 	{
 		// Initialize the number of piece of each player to 0
@@ -952,7 +954,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 		}
 		//king and a queen
 		if (nbplayer1 >= 2 && nbplayer2 >= 2)
-		{ System.out.println("STALEMATE");
+		{ //System.out.println("STALEMATE");
 			if (queenW >= 1 && queenB >= 1)
 				return false;
 			/*else if (rookW <= 1 && rookB <= 1)
@@ -970,24 +972,26 @@ class ReversiWidget extends JComponent implements MouseListener {
 					return false;
 				}*/
 		}
-	System.out.println("PawnW "+pawnW+ " KnightW "+knightW+ " RookW "+rookW+ " BishopW "+bishopW+ " kingW "+kingW+ " queenW "+queenW);
-	System.out.println("PawnB "+pawnB+ " KnightB "+knightB+ " RookB "+rookB+ " BishopB "+bishopB+ " kingB "+kingB+ " queenB "+queenB);
+	//System.out.println("PawnW "+pawnW+ " KnightW "+knightW+ " RookW "+rookW+ " BishopW "+bishopW+ " kingW "+kingW+ " queenW "+queenW);
+	//System.out.println("PawnB "+pawnB+ " KnightB "+knightB+ " RookB "+rookB+ " BishopB "+bishopB+ " kingB "+kingB+ " queenB "+queenB);
 	return true;
 	}
 	
-	// COMMENTAIRE MARCO
+	// This method will return the image the correspond of the piece given in parameter
 	private BufferedImage getPieceImage(Tuple<Integer, Integer> t) {	    
+		//We make a loop on the map of the images
 	    for (Entry<Tuple<Integer, Integer>, BufferedImage> entry : images.entrySet())
 	    {
+	    	//If the current image of the map match, we return it
 	    	if (entry.getKey().player == t.player && entry.getKey().piece == t.piece) {
 	    		return entry.getValue();
 	    	}
 	    }
+	    //else we return null
 	    return null;
 	}
 	
 	// will initialise the game board to the starting state
-	// COMMENTAIRE MARCO
 	private void initialState() throws IOException 
 	{
 		// Initialise all cells in the array to have a value of zero
@@ -1000,7 +1004,7 @@ class ReversiWidget extends JComponent implements MouseListener {
 				board[x][y] = new Tuple<Integer, Integer>(0, 0);
 			}
 		}
-		//set images
+		//set images in a hashtable
 		images = new Hashtable<Tuple<Integer, Integer>, BufferedImage>();
 		images.put(new Tuple<Integer, Integer>(1, 1), ImageIO.read(new File("src/img/pawn_w.png")));
 		images.put(new Tuple<Integer, Integer>(1, 2), ImageIO.read(new File("src/img/rook_w.png")));
